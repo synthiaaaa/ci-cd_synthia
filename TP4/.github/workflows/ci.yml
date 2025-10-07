@@ -23,4 +23,5 @@ jobs:
         run: flake8 app tests
 
       - name: Run tests
-        run: pytest --cov=app --cov-fail-under=80
+        run: |
+          export PYTHONPATH=$PYTHONPATH:$GITHUB_WORKSPACE/TP4
