@@ -3,7 +3,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: TP4   # GitHub Actions se place dans TP4
+        working-directory: TP4   # on reste dans TP4
 
     steps:
       - name: Checkout
@@ -23,5 +23,4 @@ jobs:
         run: flake8 app tests
 
       - name: Run tests
-        run: |
-          export PYTHONPATH=$PYTHONPATH:$GITHUB_WORKSPACE/TP4
+        run: python -m pytest --cov=app --cov-fail-under=80
