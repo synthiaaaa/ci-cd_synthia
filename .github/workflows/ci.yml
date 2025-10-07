@@ -9,6 +9,9 @@ on:
 jobs:
   build-test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: TP4   # 👈 on travaille dans le dossier TP4
 
     steps:
       - name: Checkout du code
@@ -25,9 +28,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Vérification du style de code
-        run: |
-          flake8 app tests
+        run: flake8 app tests
 
       - name: Lancer les tests unitaires avec couverture
-        run: |
-          pytest --cov=app --cov-fail-under=80
+        run: pytest --cov=app --cov-fail-under=80

@@ -1,5 +1,5 @@
 from app.main import add
 
 
-def test_add():  # 👈 ajoute une ligne vide avant la fonction
+def test_add():  
     assert add(2, 3) == 5
