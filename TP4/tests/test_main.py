@@ -1,21 +1,13 @@
-from fastapi.testclient import TestClient
-from app.main import app
+# tests/test_main.py
 
-client = TestClient(app)
+from app.main import count_words, longest_word, contains_word
 
+def test_count_words_basic():
+    assert count_words(["hello", "world"]) == 2
 
-def test_square():
-    response = client.get("/square/4")
-    assert response.status_code == 200
-    assert response.json() == {"number": 4.0, "square": 16.0}
+def test_longest_word_basic():
+    assert longest_word(["hi", "hello"]) == "hello"
 
-
-def test_sqrt():
-    response = client.get("/sqrt/9")
-    assert response.status_code == 200
-    assert response.json() == {"number": 9.0, "sqrt": 3.0}
-
-
-def test_sqrt_negative():
-    response = client.get("/sqrt/-9")
-    assert response.status_code == 400
+def test_contains_word_basic():
+    assert contains_word(["python", "ci"], "python") is True
+    assert contains_word(["python", "ci"], "java") is False

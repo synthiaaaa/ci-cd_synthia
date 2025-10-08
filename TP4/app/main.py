@@ -1,17 +1,17 @@
-from fastapi import FastAPI, HTTPException
+# app/main.py
 
-app = FastAPI(title="Math API")
-
-
-@app.get("/square/{number}")
-def square(number: float):
-    """Retourne le carré d’un nombre."""
-    return {"number": number, "square": number ** 2}
+def count_words(words_list):
+    """Retourne le nombre de mots dans la liste."""
+    return len(words_list)
 
 
-@app.get("/sqrt/{number}")
-def sqrt(number: float):
-    """Retourne la racine carrée d’un nombre positif."""
-    if number < 0:
-        raise HTTPException(status_code=400, detail="Le nombre doit être positif.")
-    return {"number": number, "sqrt": number ** 0.5}
+def longest_word(words_list):
+    """Retourne le mot le plus long. Si plusieurs ont la même longueur, retourne le premier."""
+    if not words_list:
+        return ""
+    return max(words_list, key=len)
+
+
+def contains_word(words_list, word):
+    """Vérifie si un mot est présent dans la liste."""
+    return word in words_list

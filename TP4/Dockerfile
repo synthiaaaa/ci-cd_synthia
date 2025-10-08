@@ -1,14 +1,20 @@
-# Image de base
+# Dockerfile
 FROM python:3.10-slim
 
-# Dossier de travail
+# Définit le répertoire de travail
 WORKDIR /app
 
-# Copier les fichiers
+# Copie requirements et installe les dépendances
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt
 
+# Copie le code de l'application
 COPY app ./app
+COPY tests ./tests
 
-# Lancer le serveur
+# Expose le port FastAPI par défaut
+EXPOSE 8000
+
+# Commande par défaut pour lancer l'app
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
