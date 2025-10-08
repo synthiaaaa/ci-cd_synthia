@@ -1,8 +1,17 @@
-def add(a: int, b: int) -> int:
-    """Addition simple."""
-    return a + b
+from fastapi import FastAPI, HTTPException
+
+app = FastAPI(title="Math API")
 
 
-# NE PAS exécuter de code au niveau global
-if __name__ == "__main__":
-    print("Résultat :", add(2, 3))
+@app.get("/square/{number}")
+def square(number: float):
+    """Retourne le carré d’un nombre."""
+    return {"number": number, "square": number ** 2}
+
+
+@app.get("/sqrt/{number}")
+def sqrt(number: float):
+    """Retourne la racine carrée d’un nombre positif."""
+    if number < 0:
+        raise HTTPException(status_code=400, detail="Le nombre doit être positif.")
+    return {"number": number, "sqrt": number ** 0.5}
