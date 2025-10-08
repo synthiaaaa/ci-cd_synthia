@@ -1,17 +1,15 @@
-# app/main.py
-
-def count_words(words_list):
+def count_words(words):
     """Retourne le nombre de mots dans la liste."""
-    return len(words_list)
+    return len(words)
 
 
-def longest_word(words_list):
-    """Retourne le mot le plus long. Si plusieurs ont la même longueur, retourne le premier."""
-    if not words_list:
+def longest_word(words):
+    """Retourne le mot le plus long de la liste ou une chaîne vide si la liste est vide."""
+    if not words:
         return ""
-    return max(words_list, key=len)
+    return max(words, key=len)
 
 
-def contains_word(words_list, word):
-    """Vérifie si un mot est présent dans la liste."""
-    return word in words_list
+def contains_word(words, word):
+    """Vérifie si 'word' est présent dans la liste 'words'."""
+    return word in words
