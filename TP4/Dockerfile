@@ -18,3 +18,6 @@ EXPOSE 8000
 
 # Commande par défaut pour lancer l'app
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+# Construire l'image et la taguer avec le tag Git
+docker build -t mon-utilitaire:$(git describe --tags) .
