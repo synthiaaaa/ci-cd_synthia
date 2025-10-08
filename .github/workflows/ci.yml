@@ -2,56 +2,13 @@ name: CI/CD
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-  workflow_dispatch:   # Permet de déclencher manuellement
+    tags:
+      - 'v*'   # Se déclenche quand tu pushes un tag (ex: v1.0.0)
+  workflow_dispatch:
 
 jobs:
-  build-test:
+  build-test-and-push:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: TP4  # Toutes les commandes se font dans TP4
-
-    steps:
-      # 1. Récupérer le code
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      # 2. Installer Python
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.10.18"
-
-      # 3. Mettre pip à jour
-      - name: Upgrade pip
-        run: python -m pip install --upgrade pip
-
-      # 4. Installer les dépendances
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      # 5. Installer l’outil build
-      - name: Install build tool
-        run: python -m pip install --upgrade build
-
-      # 6. Linter le code
-      - name: Run flake8 lint
-        run: python -m flake8 app tests
-
-      # 7. Exécuter les tests avec couverture
-      - name: Run tests with coverage
-        run: python -m pytest --cov=app --cov-fail-under=80
-
-      # 8. Build du package Python
-      - name: Build Python package
-        run: python -m build
-
-  docker-build:
-    runs-on: ubuntu-latest
-    needs: build-test
     defaults:
       run:
         working-directory: TP4
@@ -60,9 +17,30 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Construire une image Docker locale sans push
-      - name: Build Docker image locally
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
         run: |
-          IMAGE_TAG=mon-utilitaire:$(git describe --tags --always)
-          docker build -t $IMAGE_TAG .
-          docker images | grep mon-utilitaire
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run tests
+        run: pytest --maxfail=1 --disable-warnings -q
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push Docker Image to maalsi-bnp
+        run: |
+          IMAGE_NAME=ghcr.io/maalsi-bnp/ci-cd_synthia:${GITHUB_REF_NAME}
+          echo "Building image $IMAGE_NAME"
+          docker build -t $IMAGE_NAME .
+          echo "Pushing image $IMAGE_NAME"
+          docker push $IMAGE_NAME
